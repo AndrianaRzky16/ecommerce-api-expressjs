@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User model
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  password   String
+  name       String?
+  role       Role      @relation(fields: [roleId], references: [id])
+  roleId     Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  token      String?
+
+  // One-to-many relation with Order
+  orders     Order[]
+  // One-to-many relation with Cart
+  carts      Cart[]
+}
+
+// Role model
+model Role {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // One-to-many relation with User
+  users       User[]
+  // Many-to-many relation with Permission
+  permissions Permission[]
+}
+
+// Permission model
+model Permission {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Many-to-many relation with Role
+  roles       Role[]
+}
+
+// Product model
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  stock       Int
+  image       String
+  cartItems   CartItem[] // Add this line to establish the relation with CartItem
+  orderItems  OrderItem[] // Add this line to establish the relation with OrderItem
+  // Other product fields
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Cart model
+model Cart {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  cartItems   CartItem[]
+  // Other cart fields
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// CartItem model
+model CartItem {
+  id          Int       @id @default(autoincrement())
+  cartId      Int
+  cart        Cart      @relation(fields: [cartId], references: [id])
+  productId   Int
+  product     Product   @relation(fields: [productId], references: [id])
+  quantity    Int
+  // Other cart item fields
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Order model
+model Order {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  orderItems OrderItem[] // Add this line to establish the relation with OrderItem
+  // Other order fields
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+// OrderItem model
+model OrderItem {
+  id          Int       @id @default(autoincrement())
+  orderId     Int
+  order       Order     @relation(fields: [orderId], references: [id])
+  productId   Int
+  product     Product   @relation(fields: [productId], references: [id])
+  quantity    Int
+  // Other order item fields
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
