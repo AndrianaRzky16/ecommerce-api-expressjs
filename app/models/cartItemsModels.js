@@ -23,3 +23,15 @@ export const getCartItemById = async (cartItemId) => {
 export const deleteCartItemById = async (cartItemId) => {
   return prisma.cartItem.delete({ where: { id: cartItemId } });
 };
+
+export const updateCartItem = async (cartItemId, quantity) => {
+  try {
+    const updatedCartItem = await prisma.cartItem.update({
+      where: { id: cartItemId },
+      data: { quantity: quantity },
+    });
+    return updatedCartItem;
+  } catch (error) {
+    throw error;
+  }
+};

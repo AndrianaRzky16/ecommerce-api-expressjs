@@ -1,11 +1,10 @@
 import prisma from "../prisma.js";
 import * as CartItemModel from "../models/cartItemsModels.js";
 
-// Fungsi untuk membuat item keranjang
 export const createCartItem = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
-    const cartId = req.user.cartId; // Dari middleware, asumsikan cartId ada pada req.user
+    const cartId = req.user.cartId;
     const newCartItem = await CartItemModel.createCartItem(
       cartId,
       productId,
@@ -21,10 +20,9 @@ export const createCartItem = async (req, res) => {
   }
 };
 
-// Fungsi untuk mendapatkan item keranjang berdasarkan cartId
 export const getCartItemsByCartId = async (req, res) => {
   try {
-    const cartId = req.user.cartId; // Dari middleware, asumsikan cartId ada pada req.user
+    const cartId = req.user.cartId;
     const cartItems = await CartItemModel.getCartItemsByCartId(cartId);
     res.json(cartItems);
   } catch (error) {

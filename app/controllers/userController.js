@@ -5,9 +5,9 @@ import * as UserModel from "../models/userModels.js";
 const JWT_SECRET = "568970";
 
 export const registerUser = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, roleId } = req.body;
 
-  if (!email || !password || !name) {
+  if (!email || !password || !name || !roleId) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
@@ -22,8 +22,6 @@ export const registerUser = async (req, res) => {
     return res.status(400).json({ error: "Email already in use" });
   }
 
-  const defaultRoleId = 1;
-
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -31,7 +29,7 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       name,
-      roleId: defaultRoleId,
+      roleId,
     });
 
     res
@@ -59,7 +57,7 @@ export const loginUser = async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
 
     // Save token to database
@@ -69,6 +67,17 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to login" });
+  }
+};
+
+export const logoutUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    await UserModel.updateUserToken(userId, null);
+    res.json({ message: "User logged out successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to logout user" });
   }
 };
 
