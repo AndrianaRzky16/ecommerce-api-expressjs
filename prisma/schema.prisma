@@ -30,29 +30,39 @@ model User {
 
 // Role model
 model Role {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  description String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  // One-to-many relation with User
   users       User[]
-  // Many-to-many relation with Permission
-  permissions Permission[]
+  permissions PermissionRole[]
+
+  @@map("roles")
 }
 
-// Permission model
 model Permission {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
-  description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  // Many-to-many relation with Role
-  roles       Role[]
+  roles PermissionRole[]
+
+  @@map("permissions")
 }
+
+model PermissionRole {
+  permission_id Int
+  role_id       Int
+
+  permission Permission @relation(fields: [permission_id], references: [id])
+  role       Role       @relation(fields: [role_id], references: [id])
+
+  @@id([permission_id, role_id])
+  @@map("permission_role")
+}
+
 
 // Product model
 model Product {
@@ -97,8 +107,10 @@ model CartItem {
 model Order {
   id         Int       @id @default(autoincrement())
   userId     Int
+  status    String
+  paymentStatus String?     
   user       User      @relation(fields: [userId], references: [id])
-  orderItems OrderItem[] // Add this line to establish the relation with OrderItem
+  orderItems OrderItem[]
   // Other order fields
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -106,13 +118,14 @@ model Order {
 
 // OrderItem model
 model OrderItem {
-  id          Int       @id @default(autoincrement())
-  orderId     Int
-  order       Order     @relation(fields: [orderId], references: [id])
-  productId   Int
-  product     Product   @relation(fields: [productId], references: [id])
-  quantity    Int
+  id            Int       @id @default(autoincrement())
+  orderId       Int
+  order         Order     @relation(fields: [orderId], references: [id])
+  productId     Int
+  product       Product   @relation(fields: [productId], references: [id])
+  quantity      Int
+  paymentStatus String    // Menambahkan kolom paymentStatus dengan tipe String
   // Other order item fields
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }

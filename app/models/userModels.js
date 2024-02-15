@@ -22,3 +22,4 @@ export const updateUserToken = async (userId, token) => {
     data: { token },
   });
 };
+
