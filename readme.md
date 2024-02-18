@@ -115,6 +115,53 @@
 - Headers:
 - Tambahkan header Authorization dengan nilai Bearer <token> (ganti <token> dengan token JWT yang Anda dapatkan setelah login).
 
+Response:
+
+{
+"success": true,
+"message": "Cart created successfully",
+"cart": {
+"id": 1,
+"userId": 1,
+"CartItems" [
+// Sebelum Create Cart Items maka disini akan Kosong,
+// Setelah Create Cart Items akan muncul
+{
+"success": true,
+"cart": {
+"id": 1,
+"userId": 1,
+"createdAt": "2024-02-18T12:00:00.000Z",
+"updatedAt": "2024-02-18T12:00:00.000Z",
+"cartItems": [
+{
+"id": 1,
+"cartId": 1,
+"productId": 2,
+"quantity": 2,
+"createdAt": "2024-02-18T12:00:00.000Z",
+"updatedAt": "2024-02-18T12:00:00.000Z",
+"product": {
+"id": 2,
+"name": "Product Name",
+"description": "Product Description",
+"price": 100.00,
+"stock": 10,
+"image": "product_image.jpg",
+"createdAt": "2024-02-18T12:00:00.000Z",
+"updatedAt": "2024-02-18T12:00:00.000Z"
+}
+}
+]
+}
+}
+
+]
+"createdAt": "2024-02-18T12:00:00.000Z",
+"updatedAt": "2024-02-18T12:00:00.000Z"
+}
+}
+
 2. Mendapatkan Keranjang Belanja Berdasarkan ID Pengguna
 
 - Metode: GET
@@ -143,9 +190,24 @@
 - Masukkan detail item keranjang belanja dalam format JSON seperti ini:
 
 {
-"cartId": 17,
+"cartId": 1,
 "productId": 2,
 "quantity": 2
+}
+
+Response:
+
+{
+"success": true,
+"message": "Cart item created successfully",
+"cartItem": {
+"id": 1,
+"cartId": 1,
+"productId": 2,
+"quantity": 2,
+"createdAt": "2024-02-18T12:00:00.000Z",
+"updatedAt": "2024-02-18T12:00:00.000Z"
+}
 }
 
 2. Mendapatkan Item Keranjang Belanja Berdasarkan ID Keranjang
@@ -172,6 +234,21 @@
 - Headers:
 - Tambahkan header Authorization dengan nilai Bearer <token> (ganti <token> dengan token JWT yang Anda dapatkan setelah login).
 
+Response:
+
+{
+"success": true,
+"message": "Order created successfully",
+"order": {
+"id": 1,
+"userId": 1,
+"status": "pending",
+"paymentStatus": null,
+"createdAt": "2024-02-18T12:00:00.000Z",
+"updatedAt": "2024-02-18T12:00:00.000Z"
+}
+}
+
 2. Membuat Item Pesanan Baru
 
 - Metode: POST
@@ -183,9 +260,25 @@
 - Masukkan detail item pesanan dalam format JSON seperti ini:
 
 {
-"orderId": 34,
+"orderId": 1,
 "productId": 2,
 "quantity": 2
+}
+
+Response:
+
+{
+"success": true,
+"message": "Order item created successfully",
+"orderItem": {
+"id": 1,
+"orderId": 1,
+"productId": 2,
+"quantity": 2,
+"paymentStatus": Pending, // sebelum create Payment maka akan Pending ketika sudah create payment makan jadi done
+"createdAt": "2024-02-18T12:00:00.000Z",
+"updatedAt": "2024-02-18T12:00:00.000Z"
+}
 }
 
 3. Melakukan Pembayaran
@@ -194,6 +287,23 @@
 - URL Endpoint: http://localhost:PORT/payment
 - Headers:
 - Tambahkan header Authorization dengan nilai Bearer <token> (ganti <token> dengan token JWT yang Anda dapatkan setelah login).
+
+Response:
+
+{
+"success": true,
+"message": "Payment successful",
+"payment": {
+"id": 1,
+"orderId": 1,
+"amount": 200.00,
+"currency": "USD",
+"status": "completed",
+"paymentDate": "2024-02-18T12:00:00.000Z",
+"createdAt": "2024-02-18T12:00:00.000Z",
+"updatedAt": "2024-02-18T12:00:00.000Z"
+}
+}
 
 4. Mendapatkan Riwayat Item Pesanan Berdasarkan ID Pesanan
 
